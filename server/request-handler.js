@@ -12,6 +12,7 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 var exports = module.exports = {};
+var results = [];
 
 
 var requestHandler = function(request, response) {
@@ -51,9 +52,18 @@ var requestHandler = function(request, response) {
   //   response.writeHead(404, headers);
   // }
 
-  if (request.method === "GET" && request.url === "/classes/messages") {
+  if (request.method === "GET" && (request.url === "/classes/messages" || request.url === "/classes/room1") ) {
     response.writeHead(200, headers);
-    response.end(JSON.stringify({"test": "test"}));
+    console.log(JSON.stringify(request.json));
+
+    response.end(JSON.stringify({results: [{username: 'Jono', message: 'Do my bidding!'}]}));
+  } else if (request.method === "POST" && (request.url === "/classes/messages" || request.url === "/classes/room1")) {
+    response.writeHead(201, headers);
+    console.log(JSON.stringify(request.json));
+    response.end(JSON.stringify({results: [{username: 'Jono', message: 'Do my bidding!'}]}));
+  } else {
+    response.writeHead(404, headers)
+    response.end("404, not noice :(")
   }
 
   // Make sure to always call response.end() - Node may not send
@@ -83,4 +93,3 @@ var defaultCorsHeaders = {
 };
 
 exports.requestHandler = requestHandler;
-exports.defaultCorsHeaders = defaultCorsHeaders;
